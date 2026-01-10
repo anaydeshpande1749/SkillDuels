@@ -10,7 +10,7 @@ export default function DashboardLayout({ user, setUser }) {
   const menu = [
     { label: "Single Player", path: "", icon: <FaPuzzlePiece /> },
     { label: "Play Duel", path: "duel", icon: <FaGamepad /> },
-    { label: "Chat", path: "chat", icon: <FaComments /> },
+    { label: "Chat", path: "chatfriends", icon: <FaComments /> },
     { label: "Friends", path: "friends", icon: <GiThreeFriends /> },
     { label: "Arcade Games", path: "games", icon: <SiApplearcade /> },
     { label: "User Profile", path: "profile", icon: <FaUser /> },

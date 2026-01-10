@@ -36,6 +36,7 @@ const Navbar = ({ showLogin, setShowLogin }) => {
           <NavLink to="/leaderboard" className={({isActive}) => `nav-link transition ${isActive? 'active':''}`}>Leaderboard</NavLink>
           <NavLink to="/pricing" className={({isActive}) => `nav-link transition ${isActive? 'active':''}`}>Pricing</NavLink>
           <NavLink to="/contact" className={({isActive}) => `nav-link transition ${isActive? 'active':''}`}>Contact Us</NavLink>
+          <NavLink to="/chatfriends" className={({isActive}) => `nav-link transition ${isActive? 'active':''}`}>Chat</NavLink>
           
 
 
