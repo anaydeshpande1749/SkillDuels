@@ -479,7 +479,7 @@ export default function WordMatrixPage() {
   const timerRef = useRef(null);
 
   const currentUser = JSON.parse(localStorage.getItem("user")) || {};
-  const userId = currentUser?.id || currentUser._id;
+  const userId = currentUser?.id || currentUser._id || currentUser.id ;
   
   const sendScoreToBackend = async (finalScore) => {
     try {

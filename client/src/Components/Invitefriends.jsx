@@ -19,7 +19,7 @@ function Invitefriends()
 
     useEffect(()=>{
     
-        axios.get("http://localhost:4000/api/users/friends")
+        axios.get("http://localhost:9000/users/friends")
         .then((res)=>{
             setFriends(res.data)
             console.log(res.data)

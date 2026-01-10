@@ -1,6 +1,6 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+//const bcrypt = require("bcryptjs");
+//const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const {MongoClient}=require("mongodb")
 const http = require("http");
@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const JWT_SECRET = "supersecretkey";
+//const JWT_SECRET = "supersecretkey";
 
 const server = http.createServer(app); // 🔑 IMPORTANT
 const io = new Server(server, {
@@ -190,234 +190,235 @@ io.on("connection", (socket) => {
 });
 
 
-/* REGISTER */
-app.post("/register", async (req, res) => {
+// /* REGISTER */
+// app.post("/register", async (req, res) => {
 
-    let client=new MongoClient(url)
-    client.connect()
+//     let client=new MongoClient(url)
+//     client.connect()
 
-    const db=client.db("Users")
-    const collec=db.collection("details")
-   const { fullName, email, password } = req.body;
+//     const db=client.db("Users")
+//     const collec=db.collection("details")
+//    const { fullName, email, password } = req.body;
 
-   const userExists = await collec.findOne({ email })
+//    const userExists = await collec.findOne({ email })
 
   
   
-  if (userExists) {
-    return res.status(400).json({ message: "User already exists" });
-  }
+//   if (userExists) {
+//     return res.status(400).json({ message: "User already exists" });
+//   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+//   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = {
-    id: Date.now().toString(),
-    fullName,
-    email,
-    password: hashedPassword
-  };
+//   const newUser = {
+//     id: Date.now().toString(),
+//     fullName,
+//     email,
+//     password: hashedPassword
+//   };
 
-  collec.insertOne(newUser)
+//   collec.insertOne(newUser)
 
-  res.json({ message: "Account created successfully" });
-});
+//   res.json({ message: "Account created successfully" });
+// });
 
-/* LOGIN */
-app.post("/login", async (req, res) => {
+// /* LOGIN */
+// app.post("/login", async (req, res) => {
 
-    let client=new MongoClient(url)
-    client.connect()
+//     let client=new MongoClient(url)
+//     client.connect()
 
-    const db=client.db("Users")
-    const collec=db.collection("details")
+//     const db=client.db("Users")
+//     const collec=db.collection("details")
   
-    const { email, password } = req.body;
+//     const { email, password } = req.body;
 
-  const user = await collec.findOne({ email });
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
+//   const user = await collec.findOne({ email });
+//   if (!user) {
+//     return res.status(401).json({ message: "Invalid credentials" });
+//   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
+//   const isMatch = await bcrypt.compare(password, user.password);
+//   if (!isMatch) {
+//     return res.status(401).json({ message: "Invalid credentials" });
+//   }
 
-  const token = jwt.sign(
-    { userId: user.id },
-    JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+//   const token = jwt.sign(
+//     { userId: user.id },
+//     JWT_SECRET,
+//     { expiresIn: "1h" }
+//   );
 
-  res.json({
-    token,
-    user: {
-      id: user.id,
-      name: user.fullName,
-      email: user.email
-    }
-  });
-});
-
-
-/* GET CURRENT USER */
-app.get("/api/auth/me", async (req, res) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return res.status(401).json({ message: "No token" });
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-
-    const client = new MongoClient(url);
-    await client.connect();
-
-    const db = client.db("Users");
-    const collec = db.collection("details");
-
-    const user = await collec.findOne({ id: decoded.userId });
-
-    await client.close();
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({
-      user: {
-        id: user.id,
-        name: user.fullName,
-        email: user.email
-      }
-    });
-  } catch (err) {
-    res.status(401).json({ message: "Invalid token" });
-  }
-});
+//   res.json({
+//     token,
+//     user: {
+//       id: user.id,
+//       name: user.fullName,
+//       email: user.email
+//     }
+//   });
+// });
 
 
+// /* GET CURRENT USER */
+// app.get("/api/auth/me", async (req, res) => {
+//   const authHeader = req.headers.authorization;
 
-/* PROTECTED */
-app.get("/protected", (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: "No token" });
+//   if (!authHeader) {
+//     return res.status(401).json({ message: "No token" });
+//   }
 
-  const token = authHeader.split(" ")[1];
+//   const token = authHeader.split(" ")[1];
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    res.json({ message: "Access granted", userId: decoded.userId });
-  } catch {
-    res.status(401).json({ message: "Invalid token" });
-  }
-});
+//   try {
+//     const decoded = jwt.verify(token, JWT_SECRET);
 
-app.get("/categories", async (req, res) => {
-  try {
-    const client = new MongoClient(url);
-    await client.connect();
+//     const client = new MongoClient(url);
+//     await client.connect();
 
-    const db = client.db("quizapp");
-    const collection = db.collection("categories");
+//     const db = client.db("Users");
+//     const collec = db.collection("details");
 
-    const categories = await collection.find({}).toArray();
+//     const user = await collec.findOne({ id: decoded.userId });
 
-    res.status(200).json(categories);
+//     await client.close();
 
-    await client.close();
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to fetch categories" });
-  }
-});
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     res.json({
+//       user: {
+//         id: user.id,
+//         name: user.fullName,
+//         email: user.email
+//       }
+//     });
+//   } catch (err) {
+//     res.status(401).json({ message: "Invalid token" });
+//   }
+// });
 
 
 
-app.get("/friends", async (req, res) => {
-  const client = new MongoClient(url);
+// /* PROTECTED */
+// app.get("/protected", (req, res) => {
+//   const authHeader = req.headers.authorization;
+//   if (!authHeader) return res.status(401).json({ message: "No token" });
+
+//   const token = authHeader.split(" ")[1];
+
+//   try {
+//     const decoded = jwt.verify(token, JWT_SECRET);
+//     res.json({ message: "Access granted", userId: decoded.userId });
+//   } catch {
+//     res.status(401).json({ message: "Invalid token" });
+//   }
+// });
+
+// app.get("/categories", async (req, res) => {
+//   try {
+//     const client = new MongoClient(url);
+//     await client.connect();
+
+//     const db = client.db("quizapp");
+//     const collection = db.collection("categories");
+
+//     const categories = await collection.find({}).toArray();
+
+//     res.status(200).json(categories);
+
+//     await client.close();
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Failed to fetch categories" });
+//   }
+// });
 
 
-  try {
-    await client.connect();
-    const db = client.db("Users");
-    const collec = db.collection("details");
 
-    const people = await collec.find({}).toArray();
-
-    const result = people.map(user => ({
-      friend_id: user.id,
-      fullName: user.fullName,
-      email: user.email
-    }));
-
-    res.status(200).json(result);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Server error" });
-  } finally {
-    await client.close();
-  }
-});
-
-app.get("/quiz/:category", async (req, res) => {
-  const client = new MongoClient(url);
-
-  try {
-    await client.connect();
-    const db = client.db("quizapp");
-    const collection = db.collection("questions");
-    const { category } = req.params;
-
-    const questions = await collection
-      .find({ category })
-      .limit(10)
-      .toArray();
-
-    res.status(200).json(questions);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// app.get("/friends", async (req, res) => {
+//   const client = new MongoClient(url);
 
 
-app.post("/category", async (req, res) => {
-  const client = new MongoClient(url);
-  await client.connect();
+//   try {
+//     await client.connect();
+//     const db = client.db("Users");
+//     const collec = db.collection("details");
 
-  const db = client.db("session");
-  const collec = db.collection("duel");
+//     const people = await collec.find({}).toArray();
 
-  const { category } = req.body;
+//     const result = people.map(user => ({
+//       friend_id: user.id,
+//       fullName: user.fullName,
+//       email: user.email
+//     }));
 
-  await collec.insertOne({
-    category,
-    createdAt: new Date()
-  });
+//     res.status(200).json(result);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Server error" });
+//   } finally {
+//     await client.close();
+//   }
+// });
 
-  await client.close();
-  res.json({ success: true });
-});
+// app.get("/quiz/:category", async (req, res) => {
+//   const client = new MongoClient(url);
+
+//   try {
+//     await client.connect();
+//     const db = client.db("quizapp");
+//     const collection = db.collection("questions");
+//     const { category } = req.params;
+
+//     const questions = await collection
+//       .find({ category })
+//       .limit(10)
+//       .toArray();
+
+//     res.status(200).json(questions);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
 
 
-app.get("/category1", async (req, res) => {
-  const client = new MongoClient(url);
-  await client.connect();
+// app.post("/category", async (req, res) => {
+//   const client = new MongoClient(url);
+//   await client.connect();
 
-  const db = client.db("session");
-  const collec = db.collection("duel");
+//   const db = client.db("session");
+//   const collec = db.collection("duel");
 
-  const selected = await collec.findOne({}, { sort: { _id: -1 } });
+//   const { category } = req.body;
 
-  await client.close();
-  res.json(selected);
-});
+//   await collec.insertOne({
+//     category,
+//     createdAt: new Date()
+//   });
+
+//   await client.close();
+//   res.json({ success: true });
+// });
+
+
+// app.get("/category1", async (req, res) => {
+//   const client = new MongoClient(url);
+//   await client.connect();
+
+//   const db = client.db("session");
+//   const collec = db.collection("duel");
+
+//   const selected = await collec.findOne({}, { sort: { _id: -1 } });
+
+//   await client.close();
+//   res.json(selected);
+// });
+
 
 server.listen(9000, () => {
-  console.log("Server + Socket.IO running on http://localhost:9000");
+  console.log("Socket server running on http://localhost:9000");
 });
 

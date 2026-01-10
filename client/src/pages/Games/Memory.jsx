@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+
 // Core gameplay component with improved visuals
 function MemoryGameCore({ mode, onEnd, score, setScore }) {
   const [gridSize, setGridSize] = useState(3);
@@ -484,13 +486,21 @@ export default function MemoryGamePage() {
     }
   };
 
-  const currentUser = JSON.parse(localStorage.getItem("user"))  || {} ;
-  const userId = currentUser?.id || currentUser.id || currentUser._id;
- 
+  const currentUser = JSON.parse(localStorage.getItem("user"))  || {}  ;
+  const userId = currentUser?.id || currentUser.id || currentUser._id || localStorage.getItem("userId")   ;
+   const userName = localStorage.getItem("username") ||  JSON.parse(localStorage.getItem("username"));
+  // const { token, user } = res.data;
+   
 
 
+
+//  const userId = localStorage.getItem("userId");
+// const userName = localStorage.getItem("username");
   const sendScoreToBackend = async (finalScore) => {
   try {
+
+   ;
+
     if (!userId) {
       console.warn("No userId found, score not sent");
       return;
@@ -508,13 +518,15 @@ export default function MemoryGamePage() {
         // userId: currentUser.id,
         userId,
         // userName: currentUser.fullName, // ✅ REAL NAME
-        userName: currentUser.fullName || "Anonymous",
+        userName: currentUser.fullName || "Anonymous" || userName || currentUser.name ,
+        // userName:  "Anonymous" || userName  ,
         game: "memory",
         score: finalScore,
       }),
     });
 
     console.log("Score sent to backend");
+    console.log(userId);
   } catch (error) {
     console.error("Failed to send score", error);
   }
