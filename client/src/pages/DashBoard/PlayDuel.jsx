@@ -18,7 +18,7 @@ export default function PlayDuel() {
   useEffect(()=>{
 
   //  axios.get("http://localhost:4080/api/users/categories")
-    axios.get("http://localhost:4000/api/game/categories")
+    axios.get("http://localhost:9000/api/game/categories")
    .then((res)=>{setQuizdomains(res.data);console.log(res.data)})
    .catch((err)=>{console.log(err)})
   
@@ -39,7 +39,7 @@ export default function PlayDuel() {
     // .catch((err)=>{console.log(err)})
 
     axios.get(
-      `http://localhost:4000/api/game/quiz/${encodeURIComponent(category)}`
+      `http://localhost:9000/api/game/quiz/${encodeURIComponent(category)}`
     )
     .then(res => {
       console.log("Questions:", res.data);

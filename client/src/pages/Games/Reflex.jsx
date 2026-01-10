@@ -394,7 +394,7 @@ export default function ReflexGamePage() {
   };
 
   const currentUser = JSON.parse(localStorage.getItem("user")) || {} ;
-  const userId = currentUser?.id  || currentUser.id || currentUser._id ;
+  const userId = currentUser?.id  || currentUser.id || currentUser._id;
 
   const sendScoreToBackend = async (finalScore) => {
     try {

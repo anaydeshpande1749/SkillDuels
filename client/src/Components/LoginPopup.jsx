@@ -237,18 +237,22 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
 
       localStorage.setItem("token", token);
      localStorage.setItem("userId", user.id);
-     localStorage.setItem("username", user.name);
+     localStorage.setItem("username", user.name)
+      // localStorage.setItem("username", user.fullName) ;
 
-      const username = localStorage.getItem("username" );
-     console.log(username);// ✅ ADD THIS
+      // const username = localStorage.getItem("username");
+      const username = localStorage.getItem("user");
+      console.log(username);// ✅ ADD THIS
       setUser(user);
-
+      //console.log(username);
+      console.log(user.fullName);
+      console.log("hurr")
 
       setShowLogin(false);
       navigate("/dashboard");
 
     } catch (err) {
-      setMsg(err.response?.data?.message || "Something went wrong");
+      setMsg(err.response?.data?.message || "Something went wrong use new name or email " );
     }
   };
 
