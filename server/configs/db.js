@@ -1,3 +1,5 @@
+//this is db.js in configs folder
+
 import mongoose from "mongoose";
 
 export const ConnectDB = async () => {

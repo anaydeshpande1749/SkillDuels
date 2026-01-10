@@ -1,3 +1,5 @@
+//this is appcontext.jsx
+
 import { createContext,useState } from "react";
 
 export const CatContext=createContext()

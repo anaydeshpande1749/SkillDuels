@@ -1,28 +1,35 @@
+//this is invitemodal.jsx
+
+import React, { useContext } from "react";
 import { useSocket } from "./SocketContext";
-import React,{useContext} from "react"
 import { IdContext } from "./Appcontext";
-import "./All.css"
+import "./All.css";
 
 const InviteModal = () => {
   const { invite, setInvite, socket } = useSocket();
- 
-  const {id}=useContext(IdContext)
+  const { userId } = useContext(IdContext);
 
   if (!invite) return null;
 
   const acceptInvite = () => {
+    if (!socket || !userId) return;
+
     socket.emit("accept-invite", {
       from: invite,
-      to: id
+      to: userId
     });
+
     setInvite(null);
   };
 
   const rejectInvite = () => {
+    if (!socket || !userId) return;
+
     socket.emit("reject-invite", {
       from: invite,
-      to: id
+      to: userId
     });
+
     setInvite(null);
   };
 
@@ -46,3 +53,4 @@ const InviteModal = () => {
 };
 
 export default InviteModal;
+

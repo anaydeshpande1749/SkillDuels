@@ -1,3 +1,5 @@
+//this is protectedroute
+
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ user, authLoading, children }) => {

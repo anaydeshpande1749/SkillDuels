@@ -1,3 +1,5 @@
+//this is questionsmodel.js
+
 import mongoose from "mongoose";
 
 const questionSchema = new mongoose.Schema( {

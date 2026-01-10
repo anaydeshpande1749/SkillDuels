@@ -1,3 +1,5 @@
+//this is game.routes.js
+
 import express from "express";
 import mongoose from "mongoose";
 
