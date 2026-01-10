@@ -1,4 +1,4 @@
-import React, { useState,useContext,useEffect } from "react";
+import React, { useState,useContext,useEffect                                                                                            } from "react";
 import { motion } from "framer-motion";
 import { FaBolt, FaBrain, FaClock, FaTrophy } from "react-icons/fa";
 import axios from "axios"

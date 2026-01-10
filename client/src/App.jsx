@@ -9,7 +9,6 @@ import DashboardLayout from "./pages/DashBoard/DashboardLayout";
 import DashboardArena from "./pages/DashBoard/DashBoardArena";
 import PlayDuel from "./pages/DashBoard/PlayDuel";
 import Games from "./pages/DashBoard/Games";
-import Chat from "./pages/Chat";
 
 /* Components */
 import Navbar from "./Components/Navbar";
@@ -35,6 +34,9 @@ import { SocketProvider } from './Components/SocketContext';
 import InviteModal from './Components/InviteModal';
 import Duel from './Components/Duel';
 import Duelresult from './Components/Duelresult';
+import Chatfriends from "./Components/Chatfriends";
+import ChatRequest from "./Components/ChatRequest";
+import Chat from "./Components/Chat";
 
 
 function App() {
@@ -171,6 +173,12 @@ function App() {
         <Route path="/invitefriends" element={<Invitefriends/>}/>
         <Route path="/duel" element={<Duel />} />
         <Route path="/duelresult/:roomId" element={<Duelresult />} />
+       
+        <Route path="/chat-request" element={<ChatRequest />} />
+         <Route path="/chat/:roomId" element={<Chat />} />
+          <Route path="/chatfriends" element={<Chatfriends />} />
+
+
 
 
         {/* PROFILE */}
@@ -205,7 +213,7 @@ function App() {
             path="profile"
             element={<UserProfile user={user} setUser={setUser} />}
           />
-          <Route path="chat" element={<Chat />} />
+          <Route path="chatfriends" element={<Chatfriends />} />
           <Route path="friends" element={<Friends />} />
           <Route path="games" element={<Games />} />
         </Route>
