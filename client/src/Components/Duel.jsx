@@ -18,25 +18,54 @@ function Duel() {
   const username = localStorage.getItem("username");
 
   /* ---------------- RECEIVE ROOM ID ---------------- */
+  // useEffect(() => {
+  //   if (!socket) return;
+
+  //   socket.on("start-match", (id) => {
+  //     setRoomId(id);
+  //   });
+
+  //   return () => socket.off("start-match");
+  // }, [socket]);
+
   useEffect(() => {
-    if (!socket) return;
+  if (!socket) return;
 
-    socket.on("start-match", (id) => {
-      setRoomId(id);
-    });
+  socket.on("start-match", (id) => {
+    setRoomId(id);
+    // 🔥 AUTO NAVIGATE TO DUEL PAGE
+    window.location.href = "/duel";
+  });
+  console.log("Room ID:", roomId);
 
-    return () => socket.off("start-match");
-  }, [socket]);
+
+  return () => socket.off("start-match");
+}, [socket]);
+
 
   /* ---------------- JOIN ROOM ---------------- */
-  useEffect(() => {
-    if (!socket || !roomId) return;
+  // useEffect(() => {
+  //   if (!socket || !roomId) return;
 
-    socket.emit("join-room", {
-      roomId,
-      username
-    });
-  }, [socket, roomId, username]);
+  //   socket.emit("join-room", {
+  //     roomId,
+  //     username
+  //   });
+  // }, [socket, roomId, username]);
+
+  /* ---------------- JOIN ROOM ---------------- */
+useEffect(() => {
+  if (!socket || !roomId) return;
+
+  const username = localStorage.getItem("username") || "Player";
+  
+  socket.emit("join-room", {
+    roomId,
+    username
+  });
+  
+  console.log("Joined room:", roomId, "as", username);
+}, [socket, roomId]);
 
   /* ---------------- RECEIVE QUESTIONS ---------------- */
   useEffect(() => {

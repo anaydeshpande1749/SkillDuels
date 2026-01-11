@@ -41,15 +41,31 @@ export const SocketProvider = ({ children }) => {
     // };
 
     // 🔥 REGISTER ON FIRST CONNECT
-    register();
+    //register();
 
     // 🔥 REGISTER ON EVERY RECONNECT
-    socket.on("connect", register);
+    //socket.on("connect", register);
+    // 🔥 REGISTER ONLY AFTER CONNECT
+socket.on("connect", () => {
+  register(); // ✅ run once per connection
+});
+
+socket.on("receive-invite", ({ from }) => {
+  console.log("🎮 Duel invite received from:", from);
+  setInvite(from);
+});
+  
+// Add this too - to navigate when invite is accepted
+socket.on("start-match", (roomId) => {
+  console.log("Starting match with room:", roomId);
+  navigate(`/duel`);
+});
+
 
     /* INVITE */
-    socket.on("receive-invite", ({ from }) => {
-      setInvite(from);
-    });
+    // socket.on("receive-invite", ({ from }) => {
+    //   setInvite(from);
+    // });
 
     /* CHAT REQUEST */
     // socket.on("receive-chat-request", ({ from }) => {
@@ -63,6 +79,7 @@ export const SocketProvider = ({ children }) => {
     return () => {
       socket.off("connect", register);
       socket.off("receive-invite");
+      socket.off("start-match");
       //socket.off("receive-chat-request");
       //socket.off("chat-rejected");
       //socket.disconnect();

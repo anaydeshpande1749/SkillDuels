@@ -7,11 +7,16 @@ import { IdContext } from "./Appcontext";
 import { useSocket } from "./SocketContext";
 import { useNavigate } from "react-router-dom";
 
+
+
 function Invitefriends() {
   const [friends, setFriends] = useState([]);
   const { userId } = useContext(IdContext);
   const { socket } = useSocket();
   const navigate = useNavigate();
+
+  //const [incomingInvite, setIncomingInvite] = useState(null);
+
 
    const backfrominvite = () => {
   //socket.emit("leave-chat-room", { roomId });
@@ -33,6 +38,21 @@ useEffect(() => {
   return () => socket.off("online-users");
 }, [socket]);
 
+
+// useEffect(() => {
+//   if (!socket) return;
+
+//   const onInvite = ({ from }) => {
+//     console.log("📨 Duel invite from:", from);
+//     setIncomingInvite(from); // 🔥 local state = stable
+//   };
+
+//   socket.on("receive-invite", onInvite);
+
+//   return () => {
+//     socket.off("receive-invite", onInvite);
+//   };
+// }, [socket]);
 
 
   /* ---------------- FETCH USERS (PORT 4000) ---------------- */
@@ -94,16 +114,16 @@ useEffect(() => {
           //   </button>
           // </div>
 
-        <div className="friend-card" key={friend.friend_id}>
+        <div className="friend-card" key={friend.friend_id || friend._id  }  >
           <p className="friend-name">
-            {friend.username || friend.fullName}
+            {friend.username || friend.fullName || friend.profile?.username }
           </p>
 
           <p className="friend-email">{friend.email}</p>
 
           <button
-            className="invite-btn"
-            onClick={() => handleInvite(friend.friend_id)}
+            className="invite-btn bg-amber-300 "
+            onClick={() => handleInvite( friend._id || friend.friend_id)}
           >
             Invite
           </button>
@@ -111,6 +131,45 @@ useEffect(() => {
 
         ))}
       </div>
+
+        {/* {incomingInvite && (
+  <div className="invite-overlay">
+    <div className="invite-modal">
+      <h2>🎮 Duel Invitation</h2>
+      <p>User wants to duel!</p>
+
+      <div className="invite-actions">
+        <button
+          className="accept-btn"
+          onClick={() => {
+            socket.emit("accept-invite", {
+              from: incomingInvite,
+              to: userId
+            });
+            setIncomingInvite(null);
+          }}
+        >
+          Accept
+        </button>
+
+        <button
+          className="reject-btn"
+          onClick={() => {
+            socket.emit("reject-invite", {
+              from: incomingInvite
+            });
+            setIncomingInvite(null);
+          }}
+        >
+          Reject
+        </button>
+      </div>
+    </div>
+  </div>
+)} */}
+
+
+
     </div>
   );
 }

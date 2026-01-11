@@ -218,6 +218,7 @@ function App() {
             element={<UserProfile user={user} setUser={setUser} />}
           />
           <Route path="chatfriends" element={<Chatfriends />} />
+          <Route path="invitefriends" element={<Invitefriends />} /> {/* 🔥 ADD THIS */}
           <Route path="friends" element={<Friends />} />
           <Route path="games" element={<Games />} />
         </Route>

@@ -65,33 +65,64 @@ socket.on("get-online-users", () => {
   
 
   /* -------- INVITE -------- */
-  socket.on("send-invite", ({ from, to }) => {
-    const receiver = onlineUsers[to];
-    if (receiver) {
-      io.to(receiver).emit("receive-invite", { from });
-    }
-  });
+  // socket.on("send-invite", ({ from, to }) => {
+  //   const receiver = onlineUsers[to];
+  //   if (receiver) {
+  //     io.to(receiver).emit("receive-invite", { from });
+  //   }
+  // });
+
+/* -------- INVITE -------- */
+socket.on("send-invite", ({ from, to }) => {
+  console.log("📨 Invite sent:", { from, to });
+  console.log("Online users:", onlineUsers);
+  
+  const receiver = onlineUsers[to];
+  if (receiver) {
+    console.log("✅ Receiver found, sending invite to socket:", receiver);
+    io.to(receiver).emit("receive-invite", { from });
+  } else {
+    console.log("❌ Receiver not online:", to);
+  }
+});
+
 
   socket.on("reject-invite", ({ from }) => {
     const sender = onlineUsers[from];
     if (sender) io.to(sender).emit("invite-rejected");
   });
 
-  socket.on("accept-invite", async ({ from, to }) => {
-    const duel = await db
-      .collection("duel")
-      .findOne({}, { sort: { _id: -1 } });
+  // socket.on("accept-invite", async ({ from, to }) => {
+  //   const duel = await db
+  //     .collection("duel")
+  //     .findOne({}, { sort: { _id: -1 } });
 
-    if (!duel) return;
+  //   if (!duel) return;
 
-    const roomId = duel._id.toString();
+  //   const roomId = duel._id.toString();
 
-    [from, to].forEach((id) => {
-      if (onlineUsers[id]) {
-        io.to(onlineUsers[id]).emit("start-match", roomId);
-      }
-    });
+  //   [from, to].forEach((id) => {
+  //     if (onlineUsers[id]) {
+  //       io.to(onlineUsers[id]).emit("start-match", roomId);
+  //     }
+  //   });
+  // });
+
+  socket.on("accept-invite", ({ from, to }) => {
+  // ✅ generate room instantly (NO DB)
+  const roomId = [from, to].sort().join("-");
+
+  // 🔥 notify both players
+  [from, to].forEach((id) => {
+    const socketId = onlineUsers[id];
+    if (socketId) {
+      io.to(socketId).emit("start-match", roomId);
+      console.log("Invite accepted:", from, to);
+
+    }
   });
+});
+
 
   /* -------- DUEL ROOM -------- */
   socket.on("join-room", ({ roomId, username }) => {

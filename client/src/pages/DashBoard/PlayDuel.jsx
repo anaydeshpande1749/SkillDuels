@@ -27,11 +27,18 @@ export default function PlayDuel() {
   }, []);
 
   /* ---------------- SELECT CATEGORY ---------------- */
+  // const handleSelectCategory = (category) => {
+  //   setSelectedQuiz(category);
+  //   setCategory(category.name); // store globally for duel
+  //   navigate("/invitefriends");
+  // };
+
   const handleSelectCategory = (category) => {
-    setSelectedQuiz(category);
-    setCategory(category.name); // store globally for duel
-    navigate("/invitefriends");
-  };
+  setSelectedQuiz(category);
+  setCategory(category.name); // store globally for duel
+  localStorage.setItem("selectedCategory", category.name); // 🔥 ADD THIS
+  navigate("/dashboard/invitefriends"); // 🔥 CHANGE THIS from "/invitefriends" to "/dashboard/invitefriends"
+};
 
   /* ---------------- START MATCH (UI ONLY) ---------------- */
   const handleStartMatch = () => {
