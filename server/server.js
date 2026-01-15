@@ -78,7 +78,7 @@ app.use(express.urlencoded({ extended: true }));
 ConnectDB();
 
 // Socket Chat DB (native mongodb)
-const mongoClient = new MongoClient(process.env.MONGO_URL);
+const mongoClient = new MongoClient(process.env.MONGODB_URL);
 let db;
 
 async function initSocketDB() {
