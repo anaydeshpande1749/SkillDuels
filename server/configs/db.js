@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 export const ConnectDB = async () => {
   try {
     // await mongoose.connect(process.env.MONGODB_URL, {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGODB_URL, {
       dbName: "skillduels",   // 🔐 FORCE DB NAME
     });
 
