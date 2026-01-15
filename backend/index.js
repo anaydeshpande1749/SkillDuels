@@ -252,7 +252,7 @@ socket.on("join-chat-room", ({ roomId }) => {
 /* ======================
    SERVER
 ====================== */
-server.listen(9000, () => {
-  console.log("Socket server running on http://localhost:9000");
+server.listen(4000, () => {
+  console.log("Socket server running on http://localhost:4000");
 });
 
