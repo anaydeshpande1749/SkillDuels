@@ -1,3 +1,5 @@
+//this is Memory.jsx
+
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -490,7 +492,7 @@ export default function MemoryGamePage() {
   const userId = currentUser?.id || currentUser.id || currentUser._id || localStorage.getItem("userId")   ;
    const userName = localStorage.getItem("username") ||  JSON.parse(localStorage.getItem("username"));
   // const { token, user } = res.data;
-   
+   const API = import.meta.env.VITE_API_BASE_URL;
 
 
 
@@ -506,7 +508,8 @@ export default function MemoryGamePage() {
       return;
     }
       
-    await fetch("http://localhost:4000/api/game/attempt", {
+   // await fetch("http://localhost:4000/api/game/attempt", {
+    await fetch(`${API}/api/game/attempt`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -537,7 +540,8 @@ const fetchLeaderboard = async () => {
   try {
     // const res = await fetch("http://localhost:4080/api/game/leaderboard");
     const res = await fetch(
-        "http://localhost:4000/api/game/leaderboard?game=memory"
+       // "http://localhost:4000/api/game/leaderboard?game=memory"
+      `${API}/api/game/leaderboard?game=memory`
     );
 
     const data = await res.json();
@@ -618,7 +622,7 @@ useEffect(() => {
               🧠
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">Memory Fiesta</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">Memory</h1>
             
             <div className="flex gap-2 justify-center mb-3">
               <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-medium">

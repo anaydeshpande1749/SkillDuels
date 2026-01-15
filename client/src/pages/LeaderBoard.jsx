@@ -1,3 +1,5 @@
+//this is leaderboard.jsx
+
 import React from 'react'
 import Navbar from '../Components/Navbar'
 import Leadersection from '../Components/Leadersection'

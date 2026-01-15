@@ -15,6 +15,7 @@ function Invitefriends() {
   const { socket } = useSocket();
   const navigate = useNavigate();
 
+  const API = import.meta.env.VITE_API_BASE_URL;
   //const [incomingInvite, setIncomingInvite] = useState(null);
 
 
@@ -58,7 +59,8 @@ useEffect(() => {
   /* ---------------- FETCH USERS (PORT 4000) ---------------- */
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/users")
+      //.get("http://localhost:4000/api/users")
+      .get(`${API}/api/users`)
       
       // .then((res) => {
       //   // remove self from list

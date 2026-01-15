@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import useSound from "./useSound";
+import { FaLinkedin } from "react-icons/fa";
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -127,18 +128,100 @@ export default function ContactUs() {
               We'd love to hear from you. Just drop a message!
             </p>
 
-            <div className="space-y-3 text-gray-300">
+            {/* <div className="space-y-3 text-gray-300">
               <p>📍 Dombivli, Maharashtra, India</p>
               <p>📧 support@skillduels.com</p>
               <p>📞 +91 98765 43210</p>
-            </div>
+            </div> */}
 
-            <div className="flex space-x-5 text-xl mt-4">
+<div className="space-y-6 text-gray-300">
+
+  {/* 📍 Location / Contact (optional keep) */}
+  <div className="space-y-2">
+    <p>📍 Dombivli, Maharashtra, India</p>
+    {/* <p>📧 support@skillduels.com</p> */}
+    {/* <p>📞 +91 98765 43210</p> */}
+  </div>
+
+  {/* 👨‍💻 Developers */}
+  <div>
+    <h3 className="text-lg font-semibold text-white mb-3">
+      Developers
+    </h3>
+
+    <ul className="space-y-2">
+      <li className="flex items-center gap-2">
+        <span>Anay Deshpande</span>
+        <a
+          href="https://www.linkedin.com/in/anay-deshpande-/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 hover:text-blue-400"
+        >
+          <FaLinkedin />
+        </a>
+      </li>
+
+      <li className="flex items-center gap-2">
+        <span>Madhur Sawant</span>
+        <a
+          href="https://www.linkedin.com/in/madhur-sawant-183bb8356/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 hover:text-blue-400"
+        >
+          <FaLinkedin />
+        </a>
+      </li>
+
+      <li className="flex items-center gap-2">
+        <span>Sarthak Dudhe</span>
+        <a
+          href="https://www.linkedin.com/in/sarthak-dudhe-67155a327/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 hover:text-blue-400"
+        >
+          <FaLinkedin />
+        </a>
+      </li>
+
+      <li className="flex items-center gap-2">
+        <span>Piyush Shelar</span>
+        <a
+          href="https://www.linkedin.com/in/piyush-shelar-60bbb5356/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 hover:text-blue-400"
+        >
+          <FaLinkedin />
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  {/* 🗺️ Map Placeholder */}
+  <div className="w-full h-60 rounded-lg overflow-hidden border border-gray-700">
+    <iframe
+      title="Dombivli Location"
+      src="https://www.google.com/maps?q=Dombivli,Maharashtra,India&output=embed"
+      width="100%"
+      height="100%"
+      style={{ border: 0 }}
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </div>
+
+</div>
+
+
+            {/* <div className="flex space-x-5 text-xl mt-4">
               <a href="#" className="hover:text-blue-400">🐦</a>
               <a href="#" className="hover:text-blue-400">📘</a>
               <a href="#" className="hover:text-blue-400">📸</a>
               <a href="#" className="hover:text-blue-400">💼</a>
-            </div>
+            </div> */}
           </motion.div>
 
           {/* Contact Form */}

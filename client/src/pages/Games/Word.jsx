@@ -480,6 +480,7 @@ export default function WordMatrixPage() {
 
   const currentUser = JSON.parse(localStorage.getItem("user")) || {};
   const userId = currentUser?.id || currentUser._id || currentUser.id ;
+  const API = import.meta.env.VITE_API_BASE_URL;
   
   const sendScoreToBackend = async (finalScore) => {
     try {
@@ -488,7 +489,8 @@ export default function WordMatrixPage() {
         return;
       }
 
-      await fetch("http://localhost:4000/api/game/attempt", {
+     // await fetch("http://localhost:4000/api/game/attempt", {
+      await fetch(`${API}/api/game/attempt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -509,7 +511,8 @@ export default function WordMatrixPage() {
   const fetchLeaderboard = async () => {
     try {
       const res = await fetch(
-        "http://localhost:4000/api/game/leaderboard?game=wordmatrix"
+       // "http://localhost:4000/api/game/leaderboard?game=wordmatrix"
+        `${API}/api/game/leaderboard?game=wordmatrix`
       );
       const data = await res.json();
       const formatted = data.map((item, index) => ({

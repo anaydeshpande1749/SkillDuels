@@ -14,6 +14,7 @@ function Chatfriends() {
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
   const userId = localStorage.getItem("userId");
+  const API = import.meta.env.VITE_API_BASE_URL;
 
 
   const leavefriends = () => {
@@ -24,7 +25,8 @@ function Chatfriends() {
   /* ---------------- FETCH USERS (PORT 4000) ---------------- */
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/users") // ✅ correct server
+      //.get("http://localhost:4000/api/users") // ✅ correct server
+      .get(`${API}/api/users`)  // ✅ correct server
       .then((res) => {
         // remove self from list
         const filtered = res.data.filter(

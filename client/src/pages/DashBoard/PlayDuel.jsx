@@ -13,11 +13,13 @@ export default function PlayDuel() {
 
   const { setCategory } = useContext(CatContext);
   const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_BASE_URL;
 
   /* ---------------- FETCH CATEGORIES (PORT 4000) ---------------- */
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/game/categories")
+      //.get("http://localhost:4000/api/game/categories")
+      .get(`${API}/api/game/categories`)
       .then((res) => {
         setQuizDomains(res.data);
       })

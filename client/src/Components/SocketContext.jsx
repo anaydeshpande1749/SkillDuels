@@ -12,7 +12,8 @@ export const SocketProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:9000", {
+    //socketRef.current = io("http://localhost:4000", {
+    socketRef.current = io(import.meta.env.VITE_SOCKET_URL, {
       transports: ["websocket"],
       autoConnect: true
     });

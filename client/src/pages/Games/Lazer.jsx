@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 // Core gameplay component for Laser Dash
 function LaserGameCore({ mode, onEnd, score, setScore }) {
   const canvasRef = useRef(null);
@@ -727,6 +728,7 @@ export default function LaserGamePage() {
 
   const currentUser = JSON.parse(localStorage.getItem("user")) || {};
   const userId = currentUser?.id || currentUser.id || currentUser._id;
+  const API = import.meta.env.VITE_API_BASE_URL;
 
   const sendScoreToBackend = async (finalScore) => {
     try {
@@ -735,7 +737,8 @@ export default function LaserGamePage() {
         return;
       }
 
-      await fetch("http://localhost:4000/api/game/attempt", {
+      //await fetch("http://localhost:4000/api/game/attempt", {
+      await fetch(`${API}/api/game/attempt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -756,7 +759,8 @@ export default function LaserGamePage() {
   const fetchLeaderboard = async () => {
     try {
       const res = await fetch(
-        "http://localhost:4000/api/game/leaderboard?game=lazer"
+        `${API}/api/game/leaderboard?game=lazer`
+        // "http://localhost:4000/api/game/leaderboard?game=lazer"
       );
       const data = await res.json();
 

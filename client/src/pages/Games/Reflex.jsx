@@ -395,6 +395,8 @@ export default function ReflexGamePage() {
 
   const currentUser = JSON.parse(localStorage.getItem("user")) || {} ;
   const userId = currentUser?.id  || currentUser.id || currentUser._id;
+  const API = import.meta.env.VITE_API_BASE_URL;
+  
 
   const sendScoreToBackend = async (finalScore) => {
     try {
@@ -404,7 +406,8 @@ export default function ReflexGamePage() {
     }
 
 
-      await fetch("http://localhost:4000/api/game/attempt", {
+     // await fetch("http://localhost:4000/api/game/attempt", {
+      await fetch(`${API}/api/game/attempt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -427,7 +430,8 @@ export default function ReflexGamePage() {
     try {
       // const res = await fetch("http://localhost:4080/api/game/leaderboard");
       const res = await fetch(
-          "http://localhost:4000/api/game/leaderboard?game=reflex"
+         // "http://localhost:4000/api/game/leaderboard?game=reflex"
+        `${API}/api/game/leaderboard?game=reflex`
       );
 
       const data = await res.json();
