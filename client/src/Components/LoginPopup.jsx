@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-//this is login popup
-
->>>>>>> origin/main
 import React, { useState, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +5,7 @@ import axios from "axios";
 import { IdContext } from "./Appcontext";
 import { useSocket } from "./SocketContext";
 
-<<<<<<< HEAD
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Now: http://localhost:4000
-=======
-const API = import.meta.env.VITE_API_BASE_URL;
->>>>>>> origin/main
 
 const LoginPopup = ({ setShowLogin, setUser }) => {
   const [mode, setMode] = useState("signin");
@@ -22,14 +13,10 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [msg, setMsg] = useState("");
-<<<<<<< HEAD
   const { id, setId } = useContext(IdContext);
   const { socket } = useSocket();
-=======
->>>>>>> origin/main
 
-  const { setId } = useContext(IdContext);
-  const { socket } = useSocket();
+  
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -39,17 +26,12 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
     try {
       /* ---------------- SIGN UP ---------------- */
       if (mode === "signup") {
-<<<<<<< HEAD
         const res = await axios.post(`${API_BASE_URL}/register`, {
-=======
-        await axios.post(`${API}/api/users/register`, {
->>>>>>> origin/main
           fullName,
           email,
           password,
         });
 
-<<<<<<< HEAD
         const { token, user } = res.data;
 
         localStorage.setItem("token", token);
@@ -67,21 +49,11 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
 
       // LOGIN
       const res = await axios.post(`${API_BASE_URL}/login`, {
-=======
-        setMsg("Account created. Please sign in.");
-        setMode("signin");
-        return;
-      }
-
-      /* ---------------- SIGN IN ---------------- */
-      const res = await axios.post(`${API}/api/users/login`, {
->>>>>>> origin/main
         email,
         password,
       });
 
       const { token, user } = res.data;
-<<<<<<< HEAD
 
       // Store auth
       localStorage.setItem("token", token);
@@ -96,32 +68,6 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
       socket.emit("register-user", { userId: user.id, username: user.profile.username });
 
       setUser(user);
-=======
-
-      /* 🔥 RESOLVE USERNAME SAFELY */
-      const resolvedUsername =
-        user.profile?.username || user.fullName;
-
-      /* ---------------- STORE FIRST ---------------- */
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", user.id);
-      localStorage.setItem("username", resolvedUsername);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      /* ---------------- UPDATE APP STATE FIRST ---------------- */
-      setId(user.id);
-      setUser(user);
-
-      /* ---------------- REGISTER SOCKET ---------------- */
-      if (socket) {
-        socket.emit("register-user", {
-          userId: user.id,
-          username: resolvedUsername,
-        });
-      }
-
-      /* ---------------- CLOSE MODAL ---------------- */
->>>>>>> origin/main
       setShowLogin(false);
 
       /* 🔥 IMPORTANT: navigate AFTER state is set */
@@ -213,17 +159,10 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
             </button>
           </form>
 
-<<<<<<< HEAD
           {msg && <p className="text-red-400 text-sm mt-3 text-center">{msg}</p>}
-=======
-          {msg && (
-            <p className="text-red-400 text-sm mt-2">{msg}</p>
-          )}
->>>>>>> origin/main
 
           <div className="text-center text-white/60 text-sm mt-3">
             {mode === "signin" ? (
-<<<<<<< HEAD
               <>
                 Don't have an account?{" "}
                 <button
@@ -245,15 +184,6 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
                   Sign In
                 </button>
               </>
-=======
-              <button onClick={() => setMode("signup")}>
-                Sign Up
-              </button>
-            ) : (
-              <button onClick={() => setMode("signin")}>
-                Sign In
-              </button>
->>>>>>> origin/main
             )}
           </div>
 

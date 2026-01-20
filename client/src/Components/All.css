@@ -411,7 +411,6 @@
 .chat-input button:hover {
   background-color: #1e40af;
 }
-<<<<<<< HEAD
 /* Page container */
 .result-container {
   min-height: 100vh;
@@ -471,7 +470,6 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 120, 255, 0.4);
 }
-=======
 
 
 
@@ -493,4 +491,3 @@
 }
 
 
->>>>>>> origin/main

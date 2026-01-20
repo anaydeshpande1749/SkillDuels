@@ -3,26 +3,15 @@
 import { useEffect, useState } from "react";
 import { useSocket } from "./SocketContext";
 import axios from "axios";
-<<<<<<< HEAD
-import "./All.css";
-=======
 import { useNavigate } from "react-router-dom";
 import "./All.css";
 
->>>>>>> origin/main
 
 function Chatfriends() {
   const [friends, setFriends] = useState([]);
   const { socket } = useSocket();
-<<<<<<< HEAD
-  const userid = localStorage.getItem("userId");
-  console.log(userid);
-
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
-=======
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
->>>>>>> origin/main
 
   const userId = localStorage.getItem("userId");
   const API = import.meta.env.VITE_API_BASE_URL;
@@ -36,25 +25,6 @@ function Chatfriends() {
   /* ---------------- FETCH USERS (PORT 4000) ---------------- */
   useEffect(() => {
     axios
-<<<<<<< HEAD
-      .get(`${API_BASE_URL}/friends`)
-      .then((res) => {
-        setFriends(res.data);
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const sendChatRequest = (friendId) => {
-    console.log(friendId);
-    const userI = localStorage.getItem("userId");
-    console.log(userI);
-    socket.emit("send-chat-request", {
-      to: friendId,
-      from: localStorage.getItem("userId"),
-=======
       //.get("http://localhost:4000/api/users") // ✅ correct server
       .get(`${API}/api/users`)  // ✅ correct server
       .then((res) => {
@@ -90,7 +60,6 @@ function Chatfriends() {
           to: userId
         });
       }
->>>>>>> origin/main
     });
 
     socket.on("chat-started", ({ roomId }) => {
@@ -126,13 +95,6 @@ const sendChatRequest = (friendId) => {
   return (
     <div className="chatfriends-container">
       <h2>Friends</h2>
-<<<<<<< HEAD
-
-      {friends.map((f) => (
-        <div className="friend-card" key={f.friend_id}>
-          <span className="friend-name">{f.fullName}</span>
-          <button className="chat-btn" onClick={() => sendChatRequest(f.friend_id)}>
-=======
        <button className="back-btn" onClick={leavefriends}>
            ← Back
       </button>
@@ -147,7 +109,6 @@ const sendChatRequest = (friendId) => {
             className="chat-btn"
             onClick={() => sendChatRequest(f.friend_id)}
           >
->>>>>>> origin/main
             Chat
           </button>
         </div>
@@ -156,11 +117,6 @@ const sendChatRequest = (friendId) => {
   );
 }
 
-<<<<<<< HEAD
-export default Chatfriends;
-=======
 export default Chatfriends;
 
 
-
->>>>>>> origin/main

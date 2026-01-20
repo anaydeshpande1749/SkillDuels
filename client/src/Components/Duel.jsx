@@ -2,30 +2,22 @@
 
 import React, { useEffect, useState } from "react";
 import { useSocket } from "./SocketContext";
-<<<<<<< HEAD
 import { useNavigate, useLocation } from "react-router-dom";
-=======
->>>>>>> origin/main
 import "./Duel.css";
 
 function Duel() {
   const { socket } = useSocket();
   const navigate = useNavigate();
 
-<<<<<<< HEAD
   const [categoryId, setCategoryId] = useState("");
   const [timePerQuestion, setTimePerQuestion] = useState(0);
 
-=======
-  const [roomId, setRoomId] = useState(null);
->>>>>>> origin/main
   const [questions, setQuestions] = useState([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState({});
   const [timer, setTimer] = useState(10);
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
-<<<<<<< HEAD
 
   const user = localStorage.getItem("username");
   const { state } = useLocation();
@@ -84,38 +76,8 @@ function Duel() {
   /* START QUIZ */
   const startQuiz = async () => {
     if (!categoryId) return;
-=======
-
-  const username = localStorage.getItem("username");
-
-  /* ---------------- RECEIVE ROOM ID ---------------- */
-  // useEffect(() => {
-  //   if (!socket) return;
-
-  //   socket.on("start-match", (id) => {
-  //     setRoomId(id);
-  //   });
-
-  //   return () => socket.off("start-match");
-  // }, [socket]);
-
-  useEffect(() => {
-  if (!socket) return;
-
-  socket.on("start-match", (id) => {
-    setRoomId(id);
-    // 🔥 AUTO NAVIGATE TO DUEL PAGE
-    window.location.href = "/duel";
-  });
-  console.log("Room ID:", roomId);
 
 
-  return () => socket.off("start-match");
-}, [socket]);
->>>>>>> origin/main
-
-
-<<<<<<< HEAD
     const res = await axios.get(
       `${API_BASE_URL}/quiz/by-category/${categoryId}`
     );
@@ -145,55 +107,11 @@ function Duel() {
   };
 
   /* TOTAL TIMER */
-=======
-  /* ---------------- JOIN ROOM ---------------- */
-  // useEffect(() => {
-  //   if (!socket || !roomId) return;
-
-  //   socket.emit("join-room", {
-  //     roomId,
-  //     username
-  //   });
-  // }, [socket, roomId, username]);
-
-  /* ---------------- JOIN ROOM ---------------- */
-useEffect(() => {
-  if (!socket || !roomId) return;
-
-  const username = localStorage.getItem("username") || "Player";
-  
-  socket.emit("join-room", {
-    roomId,
-    username
-  });
-  
-  console.log("Joined room:", roomId, "as", username);
-}, [socket, roomId]);
-
-  /* ---------------- RECEIVE QUESTIONS ---------------- */
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("quiz-start", ({ questions }) => {
-      setQuestions(questions);
-      setQuizStarted(true);
-      setTimer(10);
-    });
-
-    return () => socket.off("quiz-start");
-  }, [socket]);
-
-  /* ---------------- TIMER ---------------- */
->>>>>>> origin/main
   useEffect(() => {
     if (!quizStarted || quizFinished) return;
 
     const t = setInterval(() => {
-<<<<<<< HEAD
       setTotalTimer((prev) => {
-=======
-      setTimer((prev) => {
->>>>>>> origin/main
         if (prev <= 1) {
           clearInterval(t);
           nextQuestion();
@@ -206,7 +124,6 @@ useEffect(() => {
     return () => clearInterval(t);
   }, [quizStarted, quizFinished, currentQ]);
 
-<<<<<<< HEAD
   /* QUESTION TIMER */
   useEffect(() => {
     if (!quizStarted || !questions.length) return;
@@ -230,19 +147,6 @@ useEffect(() => {
   }, [currentQ, quizStarted, questions, questionTimeLeft]);
 
   /* SUBMIT QUIZ */
-=======
-  /* ---------------- NEXT QUESTION ---------------- */
-  const nextQuestion = () => {
-    if (currentQ < questions.length - 1) {
-      setCurrentQ((q) => q + 1);
-      setTimer(10);
-    } else {
-      submitQuiz();
-    }
-  };
-
-  /* ---------------- SUBMIT QUIZ ---------------- */
->>>>>>> origin/main
   const submitQuiz = () => {
     if (quizFinished) return;
     setQuizFinished(true);
@@ -253,7 +157,6 @@ useEffect(() => {
     });
   };
 
-<<<<<<< HEAD
   /* SEND RESULTS & NAVIGATE */
   useEffect(() => {
     if (!quizFinished) return;
@@ -261,15 +164,6 @@ useEffect(() => {
     socket.emit("submit-quiz", { roomId, answers });
     navigate(`/duelresult/${roomId}`);
   }, [quizFinished, roomId, answers, socket, navigate]);
-=======
-  if (!quizStarted) {
-    return (
-      <div className="duel-container">
-        <h2>Waiting for opponent...</h2>
-      </div>
-    );
-  }
->>>>>>> origin/main
 
   return (
     <div className="duel-container">
@@ -298,7 +192,6 @@ useEffect(() => {
           ))}
         </div>
 
-<<<<<<< HEAD
             <p className="question-timer">
               Question Time Left: {questionTimer}s
             </p>
@@ -343,14 +236,9 @@ useEffect(() => {
 
           <button className="submit-btn" onClick={submitQuiz}>
             Submit
-=======
-        <div className="nav-buttons">
-          <button onClick={nextQuestion}>
-            {currentQ < questions.length - 1 ? "Next" : "Finish"}
->>>>>>> origin/main
           </button>
-        </div>
-      </div>
+        
+      
     </div>
   );
 }
