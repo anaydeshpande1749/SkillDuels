@@ -1,3 +1,5 @@
+//this is generatetoken.js
+
 import jwt from "jsonwebtoken";
 
 const generateToken = (id) => {

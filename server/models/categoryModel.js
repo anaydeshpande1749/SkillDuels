@@ -1,3 +1,5 @@
+//this is categorymodel.js
+
 import mongoose from "mongoose";
 
 

@@ -1,16 +1,21 @@
+//This is index.js of backend folder running on port 9000
+
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const cors = require("cors");
+<<<<<<< HEAD
 const { MongoClient,ObjectId } = require("mongodb");
+=======
+>>>>>>> origin/main
 const http = require("http");
 const { Server } = require("socket.io");
+const { MongoClient } = require("mongodb");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -18,32 +23,46 @@ const io = new Server(server, {
   }
 });
 
-const JWT_SECRET = "supersecretkey";
-
-const url =
+/* ======================
+   CONFIG
+====================== */
+const MONGO_URL =
   "mongodb+srv://piyushshelar10_db_user:vbXofPmn1uGJAUYB@cluster0.84hcptk.mongodb.net/?appName=Cluster0";
 
-// Fake DB
-let users = [];
-
-const rooms = {};
-const onlineUsers = {};
+const mongoClient = new MongoClient(MONGO_URL);
+let db;
 
 /* ======================
-   CHAT DATA (ADDED)
+   IN-MEMORY STORES
 ====================== */
-const chatRooms = {}; // roomId -> users
+const rooms = {};        // duel rooms
+const onlineUsers = {}; // userId -> socketId
+//const chatRooms = {};   // chat rooms
 
+/* ======================
+   INIT DB
+====================== */
+async function initDB() {
+  await mongoClient.connect();
+  db = mongoClient.db("session");
+  console.log("MongoDB connected (socket server)");
+}
+initDB();
+
+/* ======================
+   SOCKET LOGIC
+====================== */
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("Connected:", socket.id);
 
+  /* -------- USER REGISTER -------- */
   socket.on("register-user", ({ userId, username }) => {
     onlineUsers[userId] = socket.id;
     socket.userId = userId;
-  socket.username = username;   // ✅ IMPORTANT
-  console.log("Registered:", userId, username);
+    socket.username = username;
   });
 
+<<<<<<< HEAD
   socket.on("send-invite", ({ from, to,category }) => {
     const receiverSocket = onlineUsers[to];
     console.log("s"+from)
@@ -52,14 +71,43 @@ io.on("connection", (socket) => {
       io.to(receiverSocket).emit("receive-invite", { from,category });
     }
   });
+=======
+  // 🔥 SEND ONLINE USERS
+socket.on("get-online-users", () => {
+  socket.emit("online-users", Object.keys(onlineUsers));
+});
+  
+
+  /* -------- INVITE -------- */
+  // socket.on("send-invite", ({ from, to }) => {
+  //   const receiver = onlineUsers[to];
+  //   if (receiver) {
+  //     io.to(receiver).emit("receive-invite", { from });
+  //   }
+  // });
+
+/* -------- INVITE -------- */
+socket.on("send-invite", ({ from, to }) => {
+  console.log("📨 Invite sent:", { from, to });
+  console.log("Online users:", onlineUsers);
+  
+  const receiver = onlineUsers[to];
+  if (receiver) {
+    console.log("✅ Receiver found, sending invite to socket:", receiver);
+    io.to(receiver).emit("receive-invite", { from });
+  } else {
+    console.log("❌ Receiver not online:", to);
+  }
+});
+
+>>>>>>> origin/main
 
   socket.on("reject-invite", ({ from }) => {
-    const senderSocket = onlineUsers[from];
-    if (senderSocket) {
-      io.to(senderSocket).emit("invite-rejected");
-    }
+    const sender = onlineUsers[from];
+    if (sender) io.to(sender).emit("invite-rejected");
   });
 
+<<<<<<< HEAD
   socket.on("accept-invite", async ({ from, to,category }) => {
     try {
        const roomId = [from, to].sort().join("-");
@@ -69,10 +117,18 @@ io.on("connection", (socket) => {
 
       const db = client.db("skillduels");
       const collec = db.collection("duel");
+=======
+  // socket.on("accept-invite", async ({ from, to }) => {
+  //   const duel = await db
+  //     .collection("duel")
+  //     .findOne({}, { sort: { _id: -1 } });
 
-      const selected = await collec.findOne({}, { sort: { _id: -1 } });
-      if (!selected) return;
+  //   if (!duel) return;
+>>>>>>> origin/main
 
+  //   const roomId = duel._id.toString();
+
+<<<<<<< HEAD
       const roomId = selected._id.toString();*/
 
       if (onlineUsers[from]) {
@@ -81,13 +137,31 @@ io.on("connection", (socket) => {
       if (onlineUsers[to]) {
         io.to(onlineUsers[to]).emit("start-match", roomId,category);
       }
+=======
+  //   [from, to].forEach((id) => {
+  //     if (onlineUsers[id]) {
+  //       io.to(onlineUsers[id]).emit("start-match", roomId);
+  //     }
+  //   });
+  // });
 
-      await client.close();
-    } catch (err) {
-      console.error("accept-invite error:", err);
+  socket.on("accept-invite", ({ from, to }) => {
+  // ✅ generate room instantly (NO DB)
+  const roomId = [from, to].sort().join("-");
+
+  // 🔥 notify both players
+  [from, to].forEach((id) => {
+    const socketId = onlineUsers[id];
+    if (socketId) {
+      io.to(socketId).emit("start-match", roomId);
+      console.log("Invite accepted:", from, to);
+>>>>>>> origin/main
+
     }
   });
+});
 
+<<<<<<< HEAD
   socket.on("start-quiz", ({ roomId, questions,username }) => {
     if (!rooms[roomId]) return;
     rooms[roomId].questions = questions;
@@ -141,23 +215,23 @@ io.on("connection", (socket) => {
       });
     }
   });
+=======
+>>>>>>> origin/main
 
+  /* -------- DUEL ROOM -------- */
   socket.on("join-room", ({ roomId, username }) => {
     if (!rooms[roomId]) {
       rooms[roomId] = {
         questions: [],
         submissions: {},
-        leaderboard: null,
         players: []
       };
     }
 
-    const alreadyJoined = rooms[roomId].players.find(
-      (p) => p.socketId === socket.id
-    );
+    const room = rooms[roomId];
 
-    if (!alreadyJoined) {
-      rooms[roomId].players.push({
+    if (!room.players.find(p => p.socketId === socket.id)) {
+      room.players.push({
         socketId: socket.id,
         username
       });
@@ -166,103 +240,107 @@ io.on("connection", (socket) => {
     socket.join(roomId);
   });
 
-  /* ======================
-     CHAT LOGIC (ADDED)
-  ====================== */
-
-  socket.on("send-chat-request", ({ from, to }) => {
-    const receiverSocket = onlineUsers[to];
-    console.log(from)
-    console.log(to)
-    console.log(onlineUsers)
-    if (receiverSocket) {
-      io.to(receiverSocket).emit("receive-chat-request", { from });
+  socket.on("start-quiz", ({ roomId, questions }) => {
+    if (rooms[roomId]) {
+      rooms[roomId].questions = questions;
+      rooms[roomId].submissions = {}; // reset
     }
   });
 
-  socket.on("accept-chat", ({ from, to }) => {
-    const roomId = [from, to].sort().join("-");
-    chatRooms[roomId] = { users: [from, to] };
-    console.log("a "+from)
-    console.log("a "+to)
+  socket.on("submit-quiz", ({ roomId, answers }) => {
+    const room = rooms[roomId];
+    if (!room || !room.questions.length) return;
 
+    let score = 0;
 
-    io.to(onlineUsers[from]).emit("chat-started", { roomId });
-    io.to(onlineUsers[to]).emit("chat-started", { roomId });
+    room.questions.forEach((q, i) => {
+      if (answers[i] === q.correctAnswer) score++;
+    });
+
+    room.submissions[socket.id] = score;
+
+    if (Object.keys(room.submissions).length === 2) {
+      const leaderboard = Object.entries(room.submissions).map(
+        ([sid, score]) => {
+          const player = room.players.find(p => p.socketId === sid);
+          return { username: player?.username, score };
+        }
+      ).sort((a, b) => b.score - a.score);
+
+      io.to(roomId).emit("quiz-end", { leaderboard });
+    }
   });
 
-  socket.on("reject-chat", ({ from, to }) => {
-  const senderSocket = onlineUsers[from];
-
-  if (senderSocket) {
-    io.to(senderSocket).emit("chat-rejected", {
-      by: to
+  /* -------- CHAT -------- */
+socket.on("send-chat-request", ({ from, fromName, to }) => {
+  const receiver = onlineUsers[to];
+  if (receiver) {
+    io.to(receiver).emit("receive-chat-request", {
+      from,
+      fromName
     });
   }
-
-  console.log(`Chat rejected by ${to}`);
 });
 
 
-  socket.on("join-chat-room", ({ roomId }) => {
-    socket.join(roomId);
-    console.log(roomId)
-  });
+socket.on("accept-chat", ({ from, to }) => {
+  const roomId = [from, to].sort().join("-");
 
-  socket.on("send-message", async ({ roomId, message,sender}) => {
-    try {
-       
-     
-      const client = new MongoClient(url);
-      await client.connect();
-      const db = client.db("session");
+  const fromSocket = onlineUsers[from];
+  const toSocket = onlineUsers[to];
 
-      await db.collection("chatMessages").insertOne({
-        roomId,
-        sender,
-        message,
-        timestamp: new Date()
-      });
+  if (!fromSocket || !toSocket) return;
 
-      await client.close();
+  io.to(fromSocket).emit("chat-started", { roomId });
+  io.to(toSocket).emit("chat-started", { roomId });
+});
 
-      io.to(roomId).emit("receive-message", {
-        sender,
-        message,
-        timestamp: new Date()
-      });
-    } catch (err) {
-      console.error("Chat error:", err);
-    }
+// -------- CHAT ROOM JOIN --------
+socket.on("join-chat-room", ({ roomId }) => {
+  socket.join(roomId);
+});
+
+
+  socket.on("send-message", async ({ roomId, message, sender }) => {
+     if (!sender) return; // ❌ reject bad payloads
+    const payload = {
+      roomId,
+      sender,
+      message,
+      timestamp: new Date()
+    };
+
+    await db.collection("chatMessages").insertOne(payload);
+    io.to(roomId).emit("receive-message", payload);
   });
 
   socket.on("get-chat-history", async ({ roomId }) => {
-    try {
-      const client = new MongoClient(url);
-      await client.connect();
-      const db = client.db("session");
+    const messages = await db
+      .collection("chatMessages")
+      .find({ roomId })
+      .sort({ timestamp: 1 })
+      .toArray();
 
-      const messages = await db
-        .collection("chatMessages")
-        .find({ roomId })
-        .sort({ timestamp: 1 })
-        .toArray();
-
-      await client.close();
-      socket.emit("chat-history", messages);
-    } catch (err) {
-      console.error("History error:", err);
-    }
+    socket.emit("chat-history", messages);
   });
 
+  /* -------- DISCONNECT -------- */
   socket.on("disconnect", () => {
-    for (const userId in onlineUsers) {
-      if (onlineUsers[userId] === socket.id) {
-        delete onlineUsers[userId];
+    console.log("Disconnected:", socket.id);
+    
+    for (const id in onlineUsers) {
+      if (onlineUsers[id] === socket.id) {
+        delete onlineUsers[id];
         break;
       }
     }
   });
+
+  socket.on("leave-chat-room", ({ roomId }) => {
+  socket.leave(roomId);
+});
+
+
 });
 
 app.post("/register", async (req, res) => {
@@ -360,8 +438,9 @@ app.post("/login", async (req, res) => {
 
 
 /* ======================
-   EXPRESS ROUTES (UNCHANGED)
+   SERVER
 ====================== */
+<<<<<<< HEAD
 
 /*app.post("/register", async (req, res) => {
   const client = new MongoClient(url);
@@ -625,4 +704,8 @@ console.log("Questions count:", questions.length);
 
 server.listen(9000, () => {
   console.log("Server + Socket.IO running on http://localhost:9000");
+=======
+server.listen(4000, () => {
+  console.log("Socket server running on http://localhost:4000");
+>>>>>>> origin/main
 });

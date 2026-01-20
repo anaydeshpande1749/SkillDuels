@@ -14,6 +14,61 @@ import userRoutes from "./routes/userRoute.js";
 const app = express();
 const server = http.createServer(app);
 
+/* ======================
+   MIDDLEWARE
+====================== */
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  })
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+/* ======================
+   DATABASES
+====================== */
+// Main App DB (mongoose)
+ConnectDB();
+
+// Socket Chat DB (native mongodb)
+const mongoClient = new MongoClient(process.env.MONGODB_URL);
+let db;
+
+async function initSocketDB() {
+  await mongoClient.connect();
+  db = mongoClient.db("session");
+  console.log("✅ MongoDB connected (Socket)");
+}
+initSocketDB();
+
+/* ======================
+   ROUTES
+====================== */
+app.use("/api/game", gameRoutes);
+app.use("/api/manage", adminRouter);
+app.use("/api/users", userRoutes);
+
+app.get("/", (req, res) => {
+  res.send("SkillDuels Server running 🚀");
+});
+
+// app.use(
+//   "/images",
+//   express.static(process.env.IMAGE_PATH)
+// );
+
+if (process.env.IMAGE_PATH) {
+  app.use("/images", express.static(process.env.IMAGE_PATH));
+}
+
+
+/* ======================
+   SOCKET.IO
+====================== */
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL || "*",
@@ -62,8 +117,11 @@ const rooms = {};
 const onlineUsers = {};
 const chatRooms = {};
 
+/* ======================
+   SOCKET LOGIC
+====================== */
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("🔌 Connected:", socket.id);
 
   socket.on("register-user", ({ userId, username }) => {
     onlineUsers[userId] = socket.id;
@@ -81,10 +139,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("reject-invite", ({ from }) => {
-    const senderSocket = onlineUsers[from];
-    if (senderSocket) {
-      io.to(senderSocket).emit("invite-rejected");
-    }
+    const sender = onlineUsers[from];
+    if (sender) io.to(sender).emit("invite-rejected");
   });
 
   socket.on("accept-invite", async ({ from, to,category }) => {
@@ -113,6 +169,13 @@ io.on("connection", (socket) => {
     } catch (err) {
       console.error("accept-invite error:", err);
     }
+
+    const room = rooms[roomId];
+    if (!room.players.find(p => p.socketId === socket.id)) {
+      room.players.push({ socketId: socket.id, username });
+    }
+
+    socket.join(roomId);
   });
 
 
@@ -237,9 +300,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    for (const userId in onlineUsers) {
-      if (onlineUsers[userId] === socket.id) {
-        delete onlineUsers[userId];
+    for (const id in onlineUsers) {
+      if (onlineUsers[id] === socket.id) {
+        delete onlineUsers[id];
         break;
       }
     }

@@ -1,3 +1,5 @@
+//this is game.routes.js
+
 import express from "express";
 import mongoose from "mongoose";
 
@@ -95,7 +97,8 @@ router.get("/quiz/:category", async (req, res) => {
 
   const questions = await db
     .collection("questions")
-    .find({ category })
+    // .find({ category })
+    .find({category: { $regex: `^${category}$`, $options: "i" }})
     .limit(10)
     .toArray();
 

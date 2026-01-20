@@ -1,5 +1,9 @@
+//this is Memory.jsx
+
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+
 
 // Core gameplay component with improved visuals
 function MemoryGameCore({ mode, onEnd, score, setScore }) {
@@ -484,19 +488,28 @@ export default function MemoryGamePage() {
     }
   };
 
-  const currentUser = JSON.parse(localStorage.getItem("user"))  || {} ;
-  const userId = currentUser?.id || currentUser.id || currentUser._id;
- 
+  const currentUser = JSON.parse(localStorage.getItem("user"))  || {}  ;
+  const userId = currentUser?.id || currentUser.id || currentUser._id || localStorage.getItem("userId")   ;
+   const userName = localStorage.getItem("username") ||  JSON.parse(localStorage.getItem("username"));
+  // const { token, user } = res.data;
+   const API = import.meta.env.VITE_API_BASE_URL;
 
 
+
+//  const userId = localStorage.getItem("userId");
+// const userName = localStorage.getItem("username");
   const sendScoreToBackend = async (finalScore) => {
   try {
+
+   ;
+
     if (!userId) {
       console.warn("No userId found, score not sent");
       return;
     }
       
-    await fetch("http://localhost:4000/api/game/attempt", {
+   // await fetch("http://localhost:4000/api/game/attempt", {
+    await fetch(`${API}/api/game/attempt`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -508,13 +521,15 @@ export default function MemoryGamePage() {
         // userId: currentUser.id,
         userId,
         // userName: currentUser.fullName, // ✅ REAL NAME
-        userName: currentUser.fullName || "Anonymous",
+        userName: currentUser.fullName || "Anonymous" || userName || currentUser.name ,
+        // userName:  "Anonymous" || userName  ,
         game: "memory",
         score: finalScore,
       }),
     });
 
     console.log("Score sent to backend");
+    console.log(userId);
   } catch (error) {
     console.error("Failed to send score", error);
   }
@@ -525,7 +540,8 @@ const fetchLeaderboard = async () => {
   try {
     // const res = await fetch("http://localhost:4080/api/game/leaderboard");
     const res = await fetch(
-        "http://localhost:4000/api/game/leaderboard?game=memory"
+       // "http://localhost:4000/api/game/leaderboard?game=memory"
+      `${API}/api/game/leaderboard?game=memory`
     );
 
     const data = await res.json();
@@ -606,7 +622,7 @@ useEffect(() => {
               🧠
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">Memory Fiesta</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">Memory</h1>
             
             <div className="flex gap-2 justify-center mb-3">
               <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-medium">

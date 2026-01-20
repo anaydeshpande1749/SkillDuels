@@ -1,3 +1,5 @@
+//this is categorycontroller.js
+
 import categoryModel from "../models/categoryModel.js";
 import questionModel from "../models/questionModel.js";
 

@@ -1,3 +1,5 @@
+//this is app.jsx
+
 import "./App.css";
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
@@ -123,7 +125,9 @@ function App() {
                       location.pathname.startsWith("/reflex") || 
                       location.pathname.startsWith("/lazer")  ||
                       location.pathname.startsWith("/word") ||
-                      location.pathname.startsWith("/invitefriends") ;
+                      location.pathname.startsWith("/invitefriends") ||
+                      location.pathname.startsWith("/chatfriends") ||
+                      location.pathname.startsWith("/chat");
 
 
   /* ======================================================
@@ -217,6 +221,7 @@ function App() {
             element={<UserProfile user={user} setUser={setUser} />}
           />
           <Route path="chatfriends" element={<Chatfriends />} />
+          <Route path="invitefriends" element={<Invitefriends />} /> {/* 🔥 ADD THIS */}
           <Route path="friends" element={<Friends />} />
           <Route path="games" element={<Games />} />
         </Route>
