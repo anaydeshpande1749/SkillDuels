@@ -1,8 +1,8 @@
-# 🧠 SkillDuels – Client Application
+# 🧠 SkillDuels 
 
 ---
 
-## 🎮 About SkillDuels (Client)
+## 🎮 About SkillDuels 
 
 **SkillDuels** is a **competitive, real-time learning platform** where users engage in **1v1 quiz battles**, earn XP, unlock achievements, and climb leaderboards.
 
@@ -93,7 +93,7 @@ Users can:
 | **Routing**         | React Router                 |
 | **State**           | Context API                  |
 | **Real-Time**       | Socket.IO Client             |
-| **Styling**         | CSS (component-level)        |
+| **Styling**         | Tailwind CSS (component-level)        |
 | **UX Enhancements** | Custom audio hooks, overlays |
 
 ---
@@ -135,6 +135,45 @@ client/
 ├── package.json
 └── README.md
 ```
+
+## 📁 Server Folder Structure
+
+```
+server/
+├── configs/
+│   └── db.js                  # MongoDB connection setup
+│
+├── controllers/
+│   ├── categoryController.js  # Quiz category logic
+│   ├── gameController.js      # Game & duel logic
+│   ├── questionController.js  # Quiz question handling
+│   └── userController.js      # User auth & profile logic
+│
+├── middleware/
+│   ├── authMiddleware.js      # JWT authentication middleware
+│   └── uploadMiddleware.js   # File / data upload handling
+│
+├── models/
+│   ├── categoryModel.js       # Category schema
+│   ├── questionModel.js       # Question schema
+│   └── userModel.js           # User schema
+│
+├── routes/
+│   ├── adminRoute.js          # Admin-specific routes
+│   ├── game.routes.js         # Game & battle routes
+│   ├── gamerouter1.js         # Additional game routing logic
+│   └── userRoute.js           # User auth & profile routes
+│
+├── utils/                     # Helper utilities
+│
+├── .env                       # Environment variables
+├── server.js                  # Express server entry point
+├── package.json               # Server dependencies
+└── package-lock.json
+
+```
+
+
 
 ---
 
@@ -184,8 +223,10 @@ npm run dev
 
 ## 📽️ Demo Video
 
-🎥 **Demo:** *(To be added)*
+🎥 **Demo:** 
 Will showcase:
+
+https://github.com/user-attachments/assets/0bf3301b-23f5-4f91-b4b8-cca52f7baefb
 
 * Live 1v1 gameplay
 * Real-time score updates
@@ -203,7 +244,6 @@ Suggested screenshots to add:
 * Result Screen
 * Leaderboard
 
-> Add images in an `/images` folder and reference them here.
 
 ---
 
@@ -221,7 +261,7 @@ Suggested screenshots to add:
 
 * **Anay Deshpande** – Client architecture, UI & gameplay flow
 * **Sarthak Dudhe** – Backend, admin panel & APIs
-* **Piyush** – Game logic & feature support
+* **Piyush** – Game logic & chat & play duel
 * **Madhur** – Testing & integration support
 
 ---
@@ -241,7 +281,7 @@ Suggested screenshots to add:
 Developed as part of an academic submission
 **Project Code:** `EDU-WEB-2025-115`
 
-License can be added if required.
+All Rights Reserved.
 
 ---
 
