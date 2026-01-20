@@ -411,6 +411,65 @@
 .chat-input button:hover {
   background-color: #1e40af;
 }
+/* Page container */
+.result-container {
+  min-height: 100vh;
+  background: #0c0c0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Result card */
+.result-card {
+  background: #111118;
+  border: 1px solid #1a1a22;
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 140, 255, 0.15);
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Heading */
+.result-card h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #4ea8ff;
+}
+
+/* Score text */
+.result-score {
+  font-size: 22px;
+  margin-bottom: 30px;
+}
+
+.result-score b {
+  color: #00b3ff;
+  font-size: 28px;
+}
+
+/* Button */
+.result-btn {
+  background: linear-gradient(135deg, #1e90ff, #005eff);
+  border: none;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.result-btn:hover {
+  background: linear-gradient(135deg, #3ea1ff, #0077ff);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 120, 255, 0.4);
+}
 
 
 

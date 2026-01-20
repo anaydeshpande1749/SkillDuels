@@ -39,7 +39,8 @@ import Duelresult from './Components/Duelresult';
 import Chatfriends from "./Components/Chatfriends";
 import ChatRequest from "./Components/ChatRequest";
 import Chat from "./Components/Chat";
-
+import Singleplayer from "./Components/Singleplayer";
+import Singleresult from "./Components/Singleresult";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -181,6 +182,8 @@ function App() {
         <Route path="/chat-request" element={<ChatRequest />} />
          <Route path="/chat/:roomId" element={<Chat />} />
           <Route path="/chatfriends" element={<Chatfriends />} />
+          <Route path="/singleplayer/:category" element={<Singleplayer />} />
+          <Route path="/singleplayer-result" element={<Singleresult />} />
 
 
 

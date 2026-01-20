@@ -12,11 +12,11 @@ const InviteModal = () => {
   if (!invite) return null;
 
   const acceptInvite = () => {
-    if (!socket || !userId) return;
-
+    console.log("im"+invite.category)
     socket.emit("accept-invite", {
-      from: invite,
-      to: userId
+      from: invite.from,
+      to: id,
+      category:invite.category
     });
 
     setInvite(null);
@@ -26,8 +26,8 @@ const InviteModal = () => {
     if (!socket || !userId) return;
 
     socket.emit("reject-invite", {
-      from: invite,
-      to: userId
+      from: invite.from,
+      to: id
     });
 
     setInvite(null);

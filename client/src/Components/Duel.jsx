@@ -2,12 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { useSocket } from "./SocketContext";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Duel.css";
 
 function Duel() {
   const { socket } = useSocket();
+  const navigate = useNavigate();
 
-  const [roomId, setRoomId] = useState(null);
+  const [categoryId, setCategoryId] = useState("");
+  const [timePerQuestion, setTimePerQuestion] = useState(0);
+
   const [questions, setQuestions] = useState([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -15,77 +19,99 @@ function Duel() {
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
 
-  const username = localStorage.getItem("username");
+  const user = localStorage.getItem("username");
+  const { state } = useLocation();
+  const category = state?.category;
+  const roomId = state?.roomId;
 
-  /* ---------------- RECEIVE ROOM ID ---------------- */
-  // useEffect(() => {
-  //   if (!socket) return;
+  console.log("d"+category);
+  console.log("r"+roomId);
 
-  //   socket.on("start-match", (id) => {
-  //     setRoomId(id);
-  //   });
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
-  //   return () => socket.off("start-match");
-  // }, [socket]);
-
+  /* FETCH SELECTED CATEGORY (DO NOT CHANGE) */
   useEffect(() => {
-  if (!socket) return;
+    // fetch category metadata
+    axios
+      .get(`${API_BASE_URL}/categories/by-name/${category}`)
+      .then((res) => {
+        setCategoryId(res.data.categoryId);
+        setTimePerQuestion(res.data.timePerQuestion);
+        console.log(res.data.categoryId);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [category, roomId]);
 
-  socket.on("start-match", (id) => {
-    setRoomId(id);
-    // 🔥 AUTO NAVIGATE TO DUEL PAGE
-    window.location.href = "/duel";
-  });
-  console.log("Room ID:", roomId);
-
-
-  return () => socket.off("start-match");
-}, [socket]);
-
-
-  /* ---------------- JOIN ROOM ---------------- */
-  // useEffect(() => {
-  //   if (!socket || !roomId) return;
-
-  //   socket.emit("join-room", {
-  //     roomId,
-  //     username
-  //   });
-  // }, [socket, roomId, username]);
-
-  /* ---------------- JOIN ROOM ---------------- */
-useEffect(() => {
-  if (!socket || !roomId) return;
-
-  const username = localStorage.getItem("username") || "Player";
-  
-  socket.emit("join-room", {
-    roomId,
-    username
-  });
-  
-  console.log("Joined room:", roomId, "as", username);
-}, [socket, roomId]);
-
-  /* ---------------- RECEIVE QUESTIONS ---------------- */
+  /* JOIN ROOM */
   useEffect(() => {
-    if (!socket) return;
+    if (socket && roomId) {
+      socket.emit("join-room", {
+        roomId,
+        username: user,
+      });
+    }
+  }, [socket, roomId, user]);
 
-    socket.on("quiz-start", ({ questions }) => {
-      setQuestions(questions);
-      setQuizStarted(true);
-      setTimer(10);
+  /* COUNTDOWN BEFORE QUIZ START */
+  useEffect(() => {
+    if (quizStarted) return;
+    if (!categoryId || !timePerQuestion) return;
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev === 1) {
+          clearInterval(timer);
+          startQuiz();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [quizStarted, categoryId, timePerQuestion]);
+
+  /* START QUIZ */
+  const startQuiz = async () => {
+    if (!categoryId) return;
+
+
+    const res = await axios.get(
+      `${API_BASE_URL}/quiz/by-category/${categoryId}`
+    );
+
+    const qs = res.data.map((q) => ({
+      ...q,
+      timelimit: timePerQuestion,
+    }));
+    console.log(qs);
+
+    setQuestions(qs);
+
+    const timeMap = {};
+    qs.forEach((_, i) => {
+      timeMap[i] = timePerQuestion;
     });
 
-    return () => socket.off("quiz-start");
-  }, [socket]);
+    setQuestionTimeLeft(timeMap);
+    setQuestionTimer(timePerQuestion);
+    setTotalTimer(qs.length * timePerQuestion);
 
-  /* ---------------- TIMER ---------------- */
+    socket.emit("start-quiz", {
+      roomId,
+      questions: qs,
+      username: user,
+    });
+  };
+
+  /* TOTAL TIMER */
   useEffect(() => {
     if (!quizStarted || quizFinished) return;
 
     const t = setInterval(() => {
-      setTimer((prev) => {
+      setTotalTimer((prev) => {
         if (prev <= 1) {
           clearInterval(t);
           nextQuestion();
@@ -98,17 +124,29 @@ useEffect(() => {
     return () => clearInterval(t);
   }, [quizStarted, quizFinished, currentQ]);
 
-  /* ---------------- NEXT QUESTION ---------------- */
-  const nextQuestion = () => {
-    if (currentQ < questions.length - 1) {
-      setCurrentQ((q) => q + 1);
-      setTimer(10);
-    } else {
-      submitQuiz();
-    }
-  };
+  /* QUESTION TIMER */
+  useEffect(() => {
+    if (!quizStarted || !questions.length) return;
 
-  /* ---------------- SUBMIT QUIZ ---------------- */
+    setQuestionTimer(questionTimeLeft[currentQ]);
+
+    const t = setInterval(() => {
+      setQuestionTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(t);
+          setLockedQuestions((x) => ({ ...x, [currentQ]: true }));
+          setQuestionTimeLeft((x) => ({ ...x, [currentQ]: 0 }));
+          return 0;
+        }
+        setQuestionTimeLeft((x) => ({ ...x, [currentQ]: prev - 1 }));
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(t);
+  }, [currentQ, quizStarted, questions, questionTimeLeft]);
+
+  /* SUBMIT QUIZ */
   const submitQuiz = () => {
     if (quizFinished) return;
     setQuizFinished(true);
@@ -119,13 +157,13 @@ useEffect(() => {
     });
   };
 
-  if (!quizStarted) {
-    return (
-      <div className="duel-container">
-        <h2>Waiting for opponent...</h2>
-      </div>
-    );
-  }
+  /* SEND RESULTS & NAVIGATE */
+  useEffect(() => {
+    if (!quizFinished) return;
+
+    socket.emit("submit-quiz", { roomId, answers });
+    navigate(`/duelresult/${roomId}`);
+  }, [quizFinished, roomId, answers, socket, navigate]);
 
   return (
     <div className="duel-container">
@@ -154,12 +192,53 @@ useEffect(() => {
           ))}
         </div>
 
-        <div className="nav-buttons">
-          <button onClick={nextQuestion}>
-            {currentQ < questions.length - 1 ? "Next" : "Finish"}
+            <p className="question-timer">
+              Question Time Left: {questionTimer}s
+            </p>
+
+            <div className="options-container">
+              {questions[currentQ].options.map((opt, idx) => (
+                <button
+                  key={idx}
+                  disabled={lockedQuestions[currentQ]}
+                  className={`option-btn ${
+                    answers[currentQ] === opt ? "option-selected" : ""
+                  }`}
+                  onClick={() =>
+                    setAnswers((prev) => ({ ...prev, [currentQ]: opt }))
+                  }
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+
+            <div className="nav-buttons">
+              {currentQ > 0 && (
+                <button
+                  className="prev-btn"
+                  onClick={() => setCurrentQ(currentQ - 1)}
+                >
+                  Previous
+                </button>
+              )}
+
+              {currentQ < questions.length - 1 && (
+                <button
+                  className="next-btn"
+                  onClick={() => setCurrentQ(currentQ + 1)}
+                >
+                  Next
+                </button>
+              )}
+            </div>
+          </div>
+
+          <button className="submit-btn" onClick={submitQuiz}>
+            Submit
           </button>
-        </div>
-      </div>
+        
+      
     </div>
   );
 }

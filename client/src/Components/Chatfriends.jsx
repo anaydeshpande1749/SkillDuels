@@ -120,4 +120,3 @@ const sendChatRequest = (friendId) => {
 export default Chatfriends;
 
 
-

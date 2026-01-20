@@ -1,19 +1,33 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { motion } from "framer-motion";
+import axios from "axios"
+import {useNavigate} from "react-router-dom"
 
 export default function DashboardArena() {
-  const allQuizzes = [
-    { title: "Space Tech Showdown", difficulty: "Hard", xp: "+120 XP", players: 340 },
-    { title: "Cyber Security Blitz", difficulty: "Medium", xp: "+80 XP", players: 520 },
-    { title: "AI & ML Rapid Fire", difficulty: "Hard", xp: "+150 XP", players: 610 },
-    { title: "General Knowledge Sprint", difficulty: "Easy", xp: "+50 XP", players: 900 },
-  ];
+  
+   const [allQuizzes,setallQuizzes]=useState([])
+   const navigate=useNavigate("")
+
+   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+  
+
+  useEffect(()=>{
+
+  //  axios.get("http://localhost:4080/api/users/categories")
+    axios.get(`${API_BASE_URL}/categories`)
+   .then((res)=>{setallQuizzes(res.data);console.log(res.data)})
+   .catch((err)=>{console.log(err)})
+  
+
+  },[])
 
   const [search, setSearch] = useState("");
 
   const filteredQuizzes = allQuizzes.filter((quiz) =>
-    quiz.title.toLowerCase().includes(search.toLowerCase())
-  );
+  quiz.name.toLowerCase().includes(search.toLowerCase())
+);
+
+
 
   return (
     <section className="w-full bg-[#0c0c0f] text-white  relative overflow-hidden">
@@ -61,9 +75,9 @@ export default function DashboardArena() {
             viewport={{ once: true }}
             className="group p-6 rounded-2xl bg-[#111118] border border-[#1a1a22] shadow-xl hover:shadow-blue-600/30 hover:border-blue-600 transition duration-300 cursor-pointer relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-blue-900/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-600/20 to-blue-900/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
 
-            <h3 className="text-xl font-bold mb-2">{quiz.title}</h3>
+            <h3 className="text-xl font-bold mb-2">{quiz.name}</h3>
 
             <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
               <span className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-full border border-blue-600/30">
@@ -74,7 +88,8 @@ export default function DashboardArena() {
 
             <div className="text-blue-400 font-semibold text-lg">{quiz.xp}</div>
 
-            <button className="mt-6 w-full py-2 rounded-xl bg-blue-600 group-hover:bg-blue-500 transition text-white font-semibold shadow-lg shadow-blue-600/20">
+            <button className="mt-6 w-full py-2 rounded-xl bg-blue-600 group-hover:bg-blue-500 transition text-white font-semibold shadow-lg shadow-blue-600/20"
+             onClick={()=>{console.log(quiz.name);navigate(`/singleplayer/${quiz.name}`)}}>
               Play Now
             </button>
           </motion.div>
